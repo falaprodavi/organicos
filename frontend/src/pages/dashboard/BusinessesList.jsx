@@ -110,7 +110,7 @@ const BusinessesList = () => {
                     {business.name}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {business.category?.name || "N/A"}
+                    {business.category[0]?.name || "N/A"}, {business.category[1]?.name || "N/A"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {business.address?.city?.name || "N/A"}

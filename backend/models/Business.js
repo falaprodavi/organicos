@@ -52,16 +52,16 @@ const BusinessSchema = new mongoose.Schema({
   long: {
     type: String,
   },
-  category: {
+  category: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: "Category",
-    required: [true, "Selecione uma categoria"],
-  },
-  subCategory: {
+    required: [true, "Selecione pelo menos uma categoria"],
+  }],
+  subCategory: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: "SubCategory",
-    required: [true, "Selecione uma subcategoria"],
-  },
+    required: [true, "Selecione pelo menos uma subcategoria"],
+  }],
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

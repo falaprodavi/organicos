@@ -5,7 +5,7 @@ const About = () => {
   useScrollToTop();
 
   useEffect(() => {
-    document.title = "O Vale Online - Quem Somos";
+    document.title = "Orgânicos - Quem Somos";
 
     let metaDescription = document.querySelector('meta[name="description"]');
 
@@ -32,75 +32,75 @@ const About = () => {
 
         {/* Texto */}
         <div className="p-8 md:w-1/2">
-          <h1 className="text-3xl font-bold text-[#042f4a] mb-4">Quem Somos</h1>
+          <h1 className="text-3xl font-bold text-[#4F583B] mb-4">Quem Somos</h1>
 
           <p className="text-gray-600 mb-4">
             Somos a plataforma de referência para descobrir os melhores
             estabelecimentos do{" "}
-            <span className="font-semibold text-[#042f4a]">
+            <span className="font-semibold text-[#4F583B]">
               Vale do Paraíba
             </span>
             . Nosso objetivo é conectar você aos negócios que merecem destaque,
             com um sistema de busca{" "}
-            <span className="font-semibold text-[#042f4a]">
+            <span className="font-semibold text-[#4F583B]">
               rápido, intuitivo e personalizável
             </span>
             .
           </p>
 
-          <h2 className="text-xl font-semibold text-[#042f4a] mb-3 mt-6">
+          <h2 className="text-xl font-semibold text-[#4F583B] mb-3 mt-6">
             Como Funciona?
           </h2>
           <p className="text-gray-600 mb-4">
             Encontre exatamente o que procura utilizando filtros como{" "}
-            <span className="font-semibold text-[#042f4a]">
+            <span className="font-semibold text-[#4F583B]">
               cidade, bairro, categoria e subcategoria
             </span>
             . Queremos que sua experiência seja{" "}
-            <span className="font-semibold text-[#042f4a]">
+            <span className="font-semibold text-[#4F583B]">
               ágil, prática e satisfatória
             </span>
             .
           </p>
 
-          <h2 className="text-xl font-semibold text-[#042f4a] mb-3 mt-6">
+          <h2 className="text-xl font-semibold text-[#4F583B] mb-3 mt-6">
             Nossos Valores
           </h2>
           <ul className="text-gray-600 list-disc pl-5 mb-4 space-y-2">
             <li>
-              <span className="font-semibold text-[#042f4a]">Igualdade:</span>{" "}
+              <span className="font-semibold text-[#4F583B]">Igualdade:</span>{" "}
               Todos os estabelecimentos têm a mesma visibilidade – não há
               priorização, os resultados são randômicos.
             </li>
             <li>
-              <span className="font-semibold text-[#042f4a]">
+              <span className="font-semibold text-[#4F583B]">
                 Transparência:
               </span>{" "}
               Planos únicos e justos, sem surpresas.
             </li>
             <li>
-              <span className="font-semibold text-[#042f4a]">Qualidade:</span>{" "}
+              <span className="font-semibold text-[#4F583B]">Qualidade:</span>{" "}
               Informações verificadas e atualizadas para você tomar a melhor
               decisão.
             </li>
             <li>
-              <span className="font-semibold text-[#042f4a]">
+              <span className="font-semibold text-[#4F583B]">
                 Acessibilidade:
               </span>{" "}
               Interface simples e eficiente, pensada para todos.
             </li>
           </ul>
 
-          <h2 className="text-xl font-semibold text-[#042f4a] mb-3 mt-6">
+          <h2 className="text-xl font-semibold text-[#4F583B] mb-3 mt-6">
             Nosso Propósito
           </h2>
           <p className="text-gray-600 mb-4">
             Acreditamos no potencial do{" "}
-            <span className="font-semibold text-[#042f4a]">
+            <span className="font-semibold text-[#4F583B]">
               Vale do Paraíba
             </span>{" "}
             e queremos impulsionar seu crescimento econômico através de{" "}
-            <span className="font-semibold text-[#042f4a]">
+            <span className="font-semibold text-[#4F583B]">
               tecnologia, colaboração e conexões que realmente importam
             </span>
             .

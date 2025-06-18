@@ -50,6 +50,18 @@ const SubCategoryService = {
     }
   },
 
+  getByCategoryIds: async (categoryIds) => {
+    try {
+      const response = await api.get(
+        `/subcategories?categoryIds=${categoryIds.join(",")}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching subcategories:", error);
+      throw error;
+    }
+  },
+
   create: async (formData) => {
     try {
       const response = await api.post("/subCategories", formData, {

@@ -61,10 +61,7 @@ function App() {
             <Route path="/dashboard/cities" element={<CitiesPage />} />
             <Route path="/dashboard/categories" element={<CategoriesPage />} />
             <Route path="/dashboard/business" element={<BusinessesList />} />
-            <Route
-              path="/dashboard/business/add"
-              element={<BusinessForm />}
-            />
+            <Route path="/dashboard/business/add" element={<BusinessForm />} />
             <Route
               path="/dashboard/business/edit/:id"
               element={<BusinessForm />}

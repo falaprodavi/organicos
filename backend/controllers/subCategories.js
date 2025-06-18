@@ -212,23 +212,23 @@ exports.updateSubCategory = async (req, res) => {
 
 exports.deleteSubCategory = async (req, res) => {
   try {
-    // Soft delete (marca como inativo)
-    const subCategory = await SubCategory.findByIdAndUpdate(
-      req.params.id,
-      { active: false },
-      { new: true }
-    );
+    const subCategory = await SubCategory.findById(req.params.id);
 
     if (!subCategory) {
       return res.status(404).json({ error: "Subcategoria não encontrada." });
     }
 
-    res.json({
-      message: "Subcategoria desativada com sucesso.",
-      subCategory,
-    });
+    // Remove o ícone se existir
+    if (subCategory.icon) {
+      deleteFile(subCategory.icon);
+    }
+
+    // Deleta permanentemente
+    await subCategory.deleteOne();
+
+    res.json({ message: "Subcategoria deletada permanentemente com sucesso." });
   } catch (err) {
-    res.status(500).json({ error: "Erro ao desativar subcategoria." });
+    res.status(500).json({ error: "Erro ao deletar subcategoria." });
   }
 };
 

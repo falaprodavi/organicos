@@ -27,28 +27,31 @@ const Feature = ({ limit = 8, fetchFunction = BusinessService.getLatest }) => {
     return <div className="text-center p-8 text-red-500">Erro: {error}</div>;
 
   return (
-    <div className="flex flex-col items-center px-1 pb-12 md:px-24 pt-20 md:mb-20 bg-slate-50 md:py-20">
-      <div className="px-4">
-        <Title
-          title="Últimos estabelecimentos cadastrados"
-          subTitle="Descubra as empresas cuidadosamente selecionadas para atender às suas necessidades!"
-        />
+    <>
+      {/* Título em destaque */}
+      <div className="w-full px-4 py-12 bg-[#EDDD5E]">
+        <h1 className="text-2xl md:text-4xl text-center text-[#4F583B] max-w-screen-xl mx-auto">
+          Últimas Empresas Naturais e Orgânicas Cadastradas
+        </h1>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4 w-full">
-        {loading
-          ? // Exibe skeletons enquanto carrega
-            Array(limit)
-              .fill()
-              .map((_, index) => (
-                <Card key={`skeleton-${index}`} loading={true} />
-              ))
-          : // Exibe os cards reais quando os dados estão prontos
-            businesses.map((business) => (
-              <Card key={business._id} business={business} />
-            ))}
+      {/* Cards */}
+      <div className="w-full bg-slate-50">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 pt-8 md:pt-20 md:pb-20">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {loading
+              ? Array(limit)
+                  .fill()
+                  .map((_, index) => (
+                    <Card key={`skeleton-${index}`} loading={true} />
+                  ))
+              : businesses.map((business) => (
+                  <Card key={business._id} business={business} />
+                ))}
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

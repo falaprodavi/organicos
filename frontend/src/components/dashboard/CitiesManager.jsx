@@ -172,7 +172,7 @@ const CitiesManager = () => {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold">Gerenciar Cidades</h2>
+      <h2 className="text-2xl font-bold">Gerenciar Estados</h2>
 
       {message.text && (
         <div
@@ -188,7 +188,7 @@ const CitiesManager = () => {
 
       <div className="bg-white p-6 rounded-lg shadow-md">
         <h3 className="text-lg font-semibold mb-4">
-          {editingId ? "Editar Cidade" : "Adicionar Nova Cidade"}
+          {editingId ? "Editar Estado" : "Adicionar Novo Estado"}
         </h3>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -262,7 +262,7 @@ const CitiesManager = () => {
               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
             />
             <label className="ml-2 block text-sm text-gray-700">
-              Cidade Popular
+              Estado Popular
             </label>
           </div>
 
@@ -288,7 +288,7 @@ const CitiesManager = () => {
 
       {/* Lista de Cidades */}
       <div className="bg-white p-6 rounded-lg shadow-md">
-        <h3 className="text-lg font-semibold mb-4">Lista de Cidades</h3>
+        <h3 className="text-lg font-semibold mb-4">Lista de Estados</h3>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">

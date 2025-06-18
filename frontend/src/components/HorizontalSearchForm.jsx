@@ -1,6 +1,3 @@
-// src/components/HorizontalSearchForm.jsx
-import React from "react";
-
 const HorizontalSearchForm = ({
   searchParams,
   cities,
@@ -24,48 +21,10 @@ const HorizontalSearchForm = ({
           value={searchParams.name}
           onChange={onSearchChange}
           placeholder="Digite o nome"
-          className="w-full px-4 py-1.5 rounded-lg border border-gray-300 text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900"
+          className="w-full px-4 py-1.5 rounded-lg border border-gray-300 text-slate-900 focus:outline-none focus:ring-2 focus:ring-lime-900"
           disabled={isLoading}
         />
       </div>
-
-      {/* Cidade */}
-      <div className="flex-1 md:w-48">
-        <select
-          name="city"
-          value={searchParams.city}
-          onChange={onSearchChange}
-          className="w-full px-4 py-2 rounded-lg border border-gray-300 text-gray-500 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          disabled={isLoading}
-        >
-          <option value="">Cidades</option>
-          {cities.map((city) => (
-            <option key={city._id} value={city.slug}>
-              {city.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Bairro (só aparece quando cidade selecionada) */}
-      {searchParams.city && (
-        <div className="flex-1 md:w-48">
-          <select
-            name="neighborhood"
-            value={searchParams.neighborhood}
-            onChange={onSearchChange}
-            className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            disabled={isLoading}
-          >
-            <option value="">Bairros</option>
-            {neighborhoods.map((n) => (
-              <option key={n._id} value={n.slug}>
-                {n.name}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
 
       {/* Categoria */}
       <div className="flex-1 md:w-48">
@@ -73,7 +32,7 @@ const HorizontalSearchForm = ({
           name="category"
           value={searchParams.category}
           onChange={onSearchChange}
-          className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-500 focus:outline-none focus:ring-2 focus:ring-lime-900"
           disabled={isLoading}
         >
           <option value="">Categorias</option>
@@ -92,7 +51,7 @@ const HorizontalSearchForm = ({
             name="subcategory"
             value={searchParams.subcategory}
             onChange={onSearchChange}
-            className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-500 focus:outline-none focus:ring-2 focus:ring-lime-900"
             disabled={isLoading}
           >
             <option value="">Subcategoria</option>
@@ -105,9 +64,47 @@ const HorizontalSearchForm = ({
         </div>
       )}
 
+      {/* Cidade */}
+      <div className="flex-1 md:w-48">
+        <select
+          name="city"
+          value={searchParams.city}
+          onChange={onSearchChange}
+          className="w-full px-4 py-2 rounded-lg border border-gray-300 text-gray-500 bg-white focus:outline-none focus:ring-2 focus:ring-lime-900"
+          disabled={isLoading}
+        >
+          <option value="">Estado</option>
+          {cities.map((city) => (
+            <option key={city._id} value={city.slug}>
+              {city.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Bairro (só aparece quando cidade selecionada) */}
+      {searchParams.city && (
+        <div className="flex-1 md:w-48">
+          <select
+            name="neighborhood"
+            value={searchParams.neighborhood}
+            onChange={onSearchChange}
+            className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-500 focus:outline-none focus:ring-2 focus:ring-lime-900"
+            disabled={isLoading}
+          >
+            <option value="">Cidade</option>
+            {neighborhoods.map((n) => (
+              <option key={n._id} value={n.slug}>
+                {n.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
       <button
         type="submit"
-        className="w-full md:w-auto px-6 py-2 rounded-lg bg-[#ff914d] text-white font-semibold hover:bg-orange-300 transition-colors duration-200 flex items-center justify-center gap-2 disabled:opacity-50"
+        className="w-full md:w-auto px-6 py-2 rounded-lg bg-[#4F583B] text-white font-semibold hover:bg-green-900 transition-colors duration-200 flex items-center justify-center gap-2 disabled:opacity-50"
         disabled={isLoading}
       >
         {isLoading ? "Buscando..." : "Buscar"}

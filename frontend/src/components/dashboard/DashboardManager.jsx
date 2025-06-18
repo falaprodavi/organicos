@@ -56,7 +56,7 @@ const DashboardManager = () => {
           icon="🏢"
         />
         <StatsCard
-          title="Cidades"
+          title="Estados"
           value={stats.cities}
           loading={loading.stats}
           icon="🌆"

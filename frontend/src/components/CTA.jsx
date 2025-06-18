@@ -15,7 +15,7 @@ const CTA = () => {
           Paraíba através de tecnologia e colaboração.
         </p>
         <div className="flex items-center gap-4 mt-6">
-          <button className="bg-[#042f4a] hover:bg-indigo-600 px-8 py-3 text-white font-medium rounded-lg shadow-md active:scale-95 transition-all">
+          <button className="bg-[#4F583B] hover:bg-indigo-600 px-8 py-3 text-white font-medium rounded-lg shadow-md active:scale-95 transition-all">
             Enviar Mensagem
           </button>
           <Link to="/quem-somos">

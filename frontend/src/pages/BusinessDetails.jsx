@@ -33,7 +33,7 @@ const BusinessDetails = () => {
 
   useEffect(() => {
     if (business) {
-      document.title = `${business.name} - O Vale Online`;
+      document.title = `${business.name} - Orgânicos`;
 
       let metaDescription = document.querySelector('meta[name="description"]');
       if (!metaDescription) {
@@ -141,7 +141,7 @@ const BusinessDetails = () => {
   }
 
   return (
-    <div className="w-full mt-14 px-4 md:px-16 lg:px-24 xl:px-32 md:mt-24 py-8">
+    <div className="max-w-screen-xl mx-auto mt-14 px-4 sm:px-6 lg:px-8 md:mt-24 py-8">
       {/* Galeria Elegante - Versão Responsiva */}
       {business.photos.length > 0 && (
         <div className="mb-8">
@@ -443,14 +443,27 @@ const BusinessDetails = () => {
           <div className="flex items-center space-x-2 mb-2">
             {/* Botão de Favorito */}
 
-            <span className="text-sm bg-blue-100 text-blue-800 px-3 py-1 rounded-full">
-              {business.category?.name}{" "}
-            </span>
-            {business.subCategory && (
-              <span className="text-sm bg-green-100 text-green-800 px-3 py-1 rounded-full">
-                {business.subCategory?.name}
-              </span>
-            )}
+            <div className="flex flex-wrap gap-2 mt-2">
+              {/* Mostrar todas as categorias */}
+              {business.category?.map((cat, index) => (
+                <span
+                  key={`cat-${index}`}
+                  className="text-sm bg-blue-100 text-blue-800 px-3 py-1 rounded-full"
+                >
+                  {cat?.name}
+                </span>
+              ))}
+
+              {/* Mostrar todas as subcategorias */}
+              {business.subCategory?.map((subCat, index) => (
+                <span
+                  key={`subcat-${index}`}
+                  className="text-sm bg-green-100 text-green-800 px-3 py-1 rounded-full"
+                >
+                  {subCat?.name}
+                </span>
+              ))}
+            </div>
           </div>
 
           {/* Nome */}
@@ -544,7 +557,7 @@ const BusinessDetails = () => {
               <a
                 href={`https://api.whatsapp.com/send/?phone=55${cleanPhoneNumber(
                   business.whatsapp
-                )}&text=Encontrei+sua+empresa+no+Guia+Do+Vale&type=phone_number&app_absent=0`}
+                )}&text=Oi!+Encontrei+sua+empresa+no+ORGANICOS.LIFE+gostaria+de+mais+detalhes&type=phone_number&app_absent=0`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center space-x-2 text-green-600 mb-3"

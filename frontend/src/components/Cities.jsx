@@ -9,11 +9,11 @@ const Cities = () => {
       <div className="flex flex-col md:flex-row items-center justify-between w-full">
         <Title
           align="left"
-          title="Cidades"
-          subTitle="Temos novidades nessas cidades especiais! Confira e encontre os melhores estabelecimentos do Vale do Paraíba!"
+          title="Estados"
+          subTitle="Temos novidades nessas por Estados! Confira e encontre as melhores empresas de Produtos Naturais!"
         />
         <button className="mb-12 group flex items-center font-medium">
-          Ver cidades
+          Ver Estados
           <img
             src={assets.arrowIcon}
             alt="icon"

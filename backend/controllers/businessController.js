@@ -55,6 +55,12 @@ exports.createBusiness = async (req, res) => {
       ...req.body,
       photos,
       owner: req.user._id,
+      category: Array.isArray(req.body.category)
+        ? req.body.category
+        : [req.body.category],
+      subCategory: Array.isArray(req.body.subCategory)
+        ? req.body.subCategory
+        : [req.body.subCategory],
     });
 
     res.status(201).json({ success: true, data: business });
@@ -89,6 +95,19 @@ exports.updateBusiness = async (req, res) => {
       for (const photoUrl of photosToDelete) {
         await cloudinary.uploader.destroy(extrairPublicIdDaUrl(photoUrl));
       }
+    }
+
+    // Garante que categories e subCategories sejam arrays
+    if (req.body.category) {
+      updateData.category = Array.isArray(req.body.category)
+        ? req.body.category
+        : [req.body.category];
+    }
+
+    if (req.body.subCategory) {
+      updateData.subCategory = Array.isArray(req.body.subCategory)
+        ? req.body.subCategory
+        : [req.body.subCategory];
     }
 
     const updated = await Business.findByIdAndUpdate(
@@ -236,7 +255,7 @@ function extractPublicIdFromUrl(url) {
     .split(".")[0];
 }
 
-// Sistema de Busca
+// Sistema de Busca - Versão melhorada
 exports.searchBusinesses = async (req, res) => {
   try {
     const {
@@ -286,105 +305,100 @@ exports.searchBusinesses = async (req, res) => {
       filter["address.neighborhood"] = neighborhoodDoc._id;
     }
 
-    // Filtros de categoria e subcategoria
+    // Filtros de categoria e subcategoria - modificado para usar $in
     if (category) {
       const categoryDoc = await Category.findOne({ slug: category });
-      if (categoryDoc) filter.category = categoryDoc._id;
+      if (categoryDoc) filter.category = { $in: [categoryDoc._id] };
     }
 
     if (subcategory) {
       const subCategoryDoc = await SubCategory.findOne({ slug: subcategory });
-      if (subCategoryDoc) filter.subCategory = subCategoryDoc._id;
+      if (subCategoryDoc) filter.subCategory = { $in: [subCategoryDoc._id] };
     }
 
     const currentPage = parseInt(page);
     const itemsPerPage = parseInt(perPage);
     const skip = (currentPage - 1) * itemsPerPage;
 
-    let businesses;
-    let totalCount;
+    let query;
 
     if (random === "true" || random === true) {
       // Abordagem para resultados aleatórios usando aggregate
-      businesses = await Business.aggregate([
+      query = Business.aggregate([
         { $match: filter },
         { $sample: { size: itemsPerPage } },
+        // Agrupa por business e acumula categorias/subcategorias
         {
-          $lookup: {
-            from: "categories",
-            localField: "category",
-            foreignField: "_id",
-            as: "category",
+          $group: {
+            _id: "$_id",
+            doc: { $first: "$$ROOT" },
+            categories: { $addToSet: "$category" },
+            subCategories: { $addToSet: "$subCategory" },
           },
         },
-        { $unwind: { path: "$category", preserveNullAndEmptyArrays: true } },
+        // Reconstroi o documento com arrays de categorias
         {
-          $lookup: {
-            from: "subcategories",
-            localField: "subCategory",
-            foreignField: "_id",
-            as: "subCategory",
+          $project: {
+            ...Object.keys(Business.schema.paths).reduce((acc, key) => {
+              acc[key] = `$doc.${key}`;
+              return acc;
+            }, {}),
+            category: "$categories",
+            subCategory: "$subCategories",
           },
         },
-        { $unwind: { path: "$subCategory", preserveNullAndEmptyArrays: true } },
-        {
-          $lookup: {
-            from: "cities",
-            localField: "address.city",
-            foreignField: "_id",
-            as: "address.city",
-          },
-        },
-        {
-          $unwind: { path: "$address.city", preserveNullAndEmptyArrays: true },
-        },
-        {
-          $lookup: {
-            from: "neighborhoods",
-            localField: "address.neighborhood",
-            foreignField: "_id",
-            as: "address.neighborhood",
-          },
-        },
-        {
-          $unwind: {
-            path: "$address.neighborhood",
-            preserveNullAndEmptyArrays: true,
-          },
-        },
-        {
-          $lookup: {
-            from: "users",
-            localField: "owner",
-            foreignField: "_id",
-            as: "owner",
-          },
-        },
-        { $unwind: { path: "$owner", preserveNullAndEmptyArrays: true } },
       ]);
-
-      totalCount = await Business.countDocuments(filter);
     } else {
-      // Abordagem normal com find() e populate()
-      [businesses, totalCount] = await Promise.all([
-        Business.find(filter)
-          .skip(skip)
-          .limit(itemsPerPage)
-          .populate(
-            "category subCategory address.city address.neighborhood owner"
-          )
-          .lean(),
-        Business.countDocuments(filter),
+      // Abordagem normal com aggregate para evitar duplicatas
+      query = Business.aggregate([
+        { $match: filter },
+        // Agrupa por business e acumula categorias/subcategorias
+        {
+          $group: {
+            _id: "$_id",
+            doc: { $first: "$$ROOT" },
+            categories: { $addToSet: "$category" },
+            subCategories: { $addToSet: "$subCategory" },
+          },
+        },
+        // Reconstroi o documento com arrays de categorias
+        {
+          $project: {
+            ...Object.keys(Business.schema.paths).reduce((acc, key) => {
+              acc[key] = `$doc.${key}`;
+              return acc;
+            }, {}),
+            category: "$categories",
+            subCategory: "$subCategories",
+          },
+        },
+        { $skip: skip },
+        { $limit: itemsPerPage },
       ]);
     }
 
+    // Executa a query e conta os documentos
+    const [businesses, totalCount] = await Promise.all([
+      query,
+      Business.countDocuments(filter),
+    ]);
+
+    // Popula as relações
+    const populatedBusinesses = await Business.populate(businesses, [
+      { path: "category", model: "Category" },
+      { path: "subCategory", model: "SubCategory" },
+      { path: "address.city", model: "City" },
+      { path: "address.neighborhood", model: "Neighborhood" },
+      { path: "owner", model: "User" },
+    ]);
+
     // Formatação dos resultados
-    const formattedBusinesses = businesses.map((business) => ({
+    const formattedBusinesses = populatedBusinesses.map((business) => ({
       ...business,
       citySlug: business.address?.city?.slug,
       neighborhoodSlug: business.address?.neighborhood?.slug,
-      categorySlug: business.category?.slug,
-      subCategorySlug: business.subCategory?.slug,
+      categorySlug: business.category?.map((c) => c?.slug),
+      subCategorySlug: business.subCategory?.map((sc) => sc?.slug),
     }));
 
     res.json({

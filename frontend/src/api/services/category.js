@@ -2,8 +2,19 @@ import api from "../axios";
 
 const CategoryService = {
   getAll: async () => {
-    const response = await api.get("/categories");
-    return response.data;
+    try {
+      const response = await api.get("/categories");
+      return {
+        success: true,
+        data: response.data || [], // Garante array vazio
+      };
+    } catch (error) {
+      console.error("Erro no CategoryService:", error);
+      return {
+        success: false,
+        data: [],
+      };
+    }
   },
 
   getById: async (id) => {

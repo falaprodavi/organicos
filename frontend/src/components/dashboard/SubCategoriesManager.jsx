@@ -26,16 +26,33 @@ const SubCategoriesManager = () => {
 
   const fetchData = async () => {
     try {
-      const [subCategoriesData, categoriesData] = await Promise.all([
+      const [subCategoriesResponse, categoriesResponse] = await Promise.all([
         SubCategoryService.getAll(),
         CategoryService.getAll(),
       ]);
+
+      // Verifica se as respostas são no formato { success, data } ou diretamente os arrays
+      const subCategoriesData = subCategoriesResponse.success
+        ? subCategoriesResponse.data
+        : Array.isArray(subCategoriesResponse)
+        ? subCategoriesResponse
+        : [];
+
+      const categoriesData = categoriesResponse.success
+        ? categoriesResponse.data
+        : Array.isArray(categoriesResponse)
+        ? categoriesResponse
+        : [];
+
       setSubCategories(subCategoriesData);
       setCategories(categoriesData);
       setLoading(false);
     } catch (error) {
       setMessage({ text: "Erro ao carregar dados", type: "error" });
       setLoading(false);
+      // Garante que os estados sejam arrays vazios em caso de erro
+      setSubCategories([]);
+      setCategories([]);
     }
   };
 

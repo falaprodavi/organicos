@@ -55,7 +55,7 @@ const Layout = () => {
             <span>
               <MdAddBusiness />
             </span>
-            {sidebarOpen && <span className="ml-3">Estabelecimentos</span>}
+            {sidebarOpen && <span className="ml-3">Marcas</span>}
           </Link>
           <Link
             to="/dashboard/cities"
@@ -64,7 +64,7 @@ const Layout = () => {
             <span>
               <MdMap />
             </span>
-            {sidebarOpen && <span className="ml-3">Cidades</span>}
+            {sidebarOpen && <span className="ml-3">Estados</span>}
           </Link>
           <Link
             to="/dashboard/neighborhoods"
@@ -73,7 +73,7 @@ const Layout = () => {
             <span>
               <MdMyLocation />
             </span>
-            {sidebarOpen && <span className="ml-3">Bairros</span>}
+            {sidebarOpen && <span className="ml-3">Cidades</span>}
           </Link>
           <Link
             to="/dashboard/categories"

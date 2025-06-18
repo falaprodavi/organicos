@@ -1,15 +1,15 @@
 import React, { useEffect } from "react";
 import Hero from "../components/Hero";
 import Feature from "../components/Feature";
-import Cities from "../components/Cities";
 import CTA from "../components/CTA";
 import useScrollToTop from "../hooks/useScrollToTop";
+import CategoriesHome from "../components/CategoriesHome";
 
 const Home = () => {
   useScrollToTop();
 
   useEffect(() => {
-    document.title = "O Vale Online - Home";
+    document.title = "Orgânicos - Home";
 
     let metaDescription = document.querySelector('meta[name="description"]');
 
@@ -27,7 +27,8 @@ const Home = () => {
     <>
       <Hero />
       <Feature />
-      <Cities />
+
+      <CategoriesHome />
       <CTA />
     </>
   );

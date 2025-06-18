@@ -40,54 +40,6 @@ const VerticalSearchForm = ({ onSubmit }) => {
           />
         </div>
 
-        {/* Cidade */}
-        <div className="form-group">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Cidade
-          </label>
-          <select
-            name="city"
-            value={searchParams.city}
-            onChange={handleSearchChange}
-            className="w-full px-4 py-2 rounded-lg border border-gray-300 text-gray-500 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Selecione uma cidade</option>
-            {cities.map((city) => (
-              <option key={city._id} value={city.slug}>
-                {city.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Bairro (só aparece quando cidade selecionada) */}
-        {searchParams.city && (
-          <div className="form-group">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Bairro
-            </label>
-            <select
-              name="neighborhood"
-              value={searchParams.neighborhood}
-              onChange={handleSearchChange}
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 text-gray-500 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Todos os bairros</option>
-              {neighborhoods.length > 0 ? (
-                neighborhoods.map((n) => (
-                  <option key={n._id} value={n.slug}>
-                    {n.name}
-                  </option>
-                ))
-              ) : (
-                <option value="" disabled>
-                  Nenhum bairro encontrado
-                </option>
-              )}
-            </select>
-          </div>
-        )}
-
         {/* Categoria */}
         <div className="form-group">
           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -136,9 +88,57 @@ const VerticalSearchForm = ({ onSubmit }) => {
           </div>
         )}
 
+        {/* Cidade */}
+        <div className="form-group">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Estado
+          </label>
+          <select
+            name="city"
+            value={searchParams.city}
+            onChange={handleSearchChange}
+            className="w-full px-4 py-2 rounded-lg border border-gray-300 text-gray-500 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Selecione um Estado</option>
+            {cities.map((city) => (
+              <option key={city._id} value={city.slug}>
+                {city.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Bairro (só aparece quando cidade selecionada) */}
+        {searchParams.city && (
+          <div className="form-group">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Cidade
+            </label>
+            <select
+              name="neighborhood"
+              value={searchParams.neighborhood}
+              onChange={handleSearchChange}
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 text-gray-500 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Todas Cidades</option>
+              {neighborhoods.length > 0 ? (
+                neighborhoods.map((n) => (
+                  <option key={n._id} value={n.slug}>
+                    {n.name}
+                  </option>
+                ))
+              ) : (
+                <option value="" disabled>
+                  Nenhum bairro encontrado
+                </option>
+              )}
+            </select>
+          </div>
+        )}
+
         <button
           type="submit"
-          className="w-full bg-[#042f4a] hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors"
+          className="w-full bg-[#4F583B] hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors"
         >
           Aplicar filtros
         </button>

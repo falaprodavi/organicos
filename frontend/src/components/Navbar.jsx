@@ -5,7 +5,7 @@ import AuthService from "../api/auth";
 
 const navLinks = [
   { name: "Home", path: "/" },
-  { name: "Explore", path: "/explore" },
+  { name: "Empresas Naturais e Orgânicas", path: "/explore" },
   { name: "Quem Somos", path: "/quem-somos" },
 ];
 
@@ -62,132 +62,145 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed top-0 left-0 w-full flex items-center justify-between px-4 md:px-16 lg:px-24 xl:px-32 transition-all duration-500 z-50 ${
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
         isScrolled
-          ? "bg-white/80 shadow-md text-gray-700 backdrop-blur-lg py-3 md:py-4"
-          : "py-4 md:py-6"
+          ? "bg-white/80 shadow-md text-gray-700 backdrop-blur-lg"
+          : "text-white"
       }`}
     >
-      <Link to="/">
-        <img
-          src={assets.logoguia}
-          alt="logo"
-          className={`h-9 ${isScrolled && "invert opacity-80"}`}
-        />
-      </Link>
-
-      {/* Desktop Navigation */}
-      <div className="hidden md:flex items-center gap-4 lg:gap-8">
-        {navLinks.map((link) => (
-          <Link
-            key={link.path}
-            to={link.path}
-            className={navItemClasses(isScrolled)}
-          >
-            {link.name}
-            <div className={underlineClasses(isScrolled)} />
-          </Link>
-        ))}
-      </div>
-
-      {/* Desktop Right Section - Sempre visível */}
-      <div className="hidden md:flex items-center gap-4">
-        <Link to="https://wa.me/5511971622876?text=Olá,%20gostaria%20de%20cadastrar%20minha%20empresa">
-          <button className="bg-[#042f4a] text-white px-4 py-2.5 rounded-full">
-            Cadastre seu estabelecimento
-          </button>
+      <div className="max-w-screen-xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4 md:py-6">
+        {/* Logo */}
+        <Link to="/" className="flex items-center">
+          <img
+            src={assets.logo}
+            alt="logo"
+            className={`h-9 transition-all duration-300 ${
+              isScrolled ? "invert opacity-80" : ""
+            }`}
+          />
         </Link>
 
-        {/* Mostrar apenas se o usuário estiver logado */}
-        {currentUser ? (
-          <div className="relative">
-            <button
-              onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-              className="flex items-center gap-2"
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center gap-4 lg:gap-8">
+          {navLinks.map((link) => (
+            <Link
+              key={link.path}
+              to={link.path}
+              className={navItemClasses(isScrolled)}
             >
-              <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
-                {currentUser.photo ? (
-                  <img
-                    src={currentUser.photo}
-                    alt="User"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <span className="text-sm font-medium text-gray-600">
-                    {currentUser.name.charAt(0).toUpperCase()}
-                  </span>
-                )}
-              </div>
-              <span className={isScrolled ? "text-gray-700" : "text-white"}>
-                {currentUser.name.split(" ")[0]}
-              </span>
-            </button>
+              {link.name}
+              <div className={underlineClasses(isScrolled)} />
+            </Link>
+          ))}
+        </div>
 
-            {isUserMenuOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                <Link
-                  to="/minha-conta"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  onClick={() => setIsUserMenuOpen(false)}
+        {/* Desktop Right Section */}
+        <div className="hidden md:flex items-center gap-4">
+          <Link to="https://wa.me/5511971622876?text=Olá,%20gostaria%20de%20cadastrar%20minha%20empresa">
+            <button className="bg-[#4F583B] text-white text-sm px-4 py-2 rounded-full transition-colors hover:bg-[#367f00]">
+              Cadastre sua Empresa
+            </button>
+          </Link>
+
+          {currentUser ? (
+            <div className="relative">
+              <button
+                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                className="flex items-center gap-2"
+              >
+                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+                  {currentUser.photo ? (
+                    <img
+                      src={currentUser.photo}
+                      alt="User"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-sm font-medium text-gray-600">
+                      {currentUser.name.charAt(0).toUpperCase()}
+                    </span>
+                  )}
+                </div>
+                <span
+                  className={`text-sm font-medium ${
+                    isScrolled ? "text-gray-700" : "text-white"
+                  }`}
                 >
-                  Minha Conta
-                </Link>
-                <Link
-                  to="/favorites"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  onClick={() => setIsUserMenuOpen(false)}
-                >
-                  Meus Favoritos
-                </Link>
-                <Link
-                  to="/minhas-empresas"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  onClick={() => setIsUserMenuOpen(false)}
-                >
-                  Minhas Empresas
-                </Link>
-                {isAdmin && (
+                  {currentUser.name.split(" ")[0]}
+                </span>
+              </button>
+
+              {/* User Menu */}
+              {isUserMenuOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
                   <Link
-                    to="/dashboard"
+                    to="/minha-conta"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     onClick={() => setIsUserMenuOpen(false)}
                   >
-                    Painel Admin
+                    Minha Conta
                   </Link>
-                )}
-                <button
-                  onClick={handleLogout}
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  Sair
-                </button>
-              </div>
-            )}
-          </div>
-        ) : (
-          <Link to="/login">
-            <button
-              className={`border px-4 py-1 text-sm font-light rounded-full ${
-                isScrolled ? "text-black" : "text-white"
-              }`}
-            >
-              Login
-            </button>
-          </Link>
-        )}
-      </div>
+                  <Link
+                    to="/favorites"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => setIsUserMenuOpen(false)}
+                  >
+                    Meus Favoritos
+                  </Link>
+                  <Link
+                    to="/minhas-empresas"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => setIsUserMenuOpen(false)}
+                  >
+                    Minhas Empresas
+                  </Link>
+                  {isAdmin && (
+                    <Link
+                      to="/dashboard"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      Painel Admin
+                    </Link>
+                  )}
+                  <button
+                    onClick={handleLogout}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Sair
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Link to="/login">
+              <button
+                className={`border px-4 py-2 text-sm rounded-full transition-colors ${
+                  isScrolled
+                    ? "text-black border-gray-300"
+                    : "text-white border-white"
+                }`}
+              >
+                Login
+              </button>
+            </Link>
+          )}
+        </div>
 
-      {/* Mobile Menu Button */}
-      <button
-        className="flex items-center gap-3 md:hidden"
-        onClick={() => setIsMenuOpen(true)}
-      >
-        <img
-          src={assets.menuIcon}
-          alt="menu"
-          className={`${isScrolled && "invert"} h-4`}
-        />
-      </button>
+        {/* Mobile Menu Button */}
+        <button
+          className="flex items-center gap-2 md:hidden"
+          onClick={() => setIsMenuOpen(true)}
+        >
+          <img
+            src={assets.menuIcon}
+            alt="menu"
+            className={`h-4 transition-all duration-300 ${
+              isScrolled ? "invert" : ""
+            }`}
+          />
+        </button>
+      </div>
 
       {/* Mobile Menu */}
       <div
@@ -206,7 +219,7 @@ const Navbar = () => {
           <Link
             key={link.path}
             to={link.path}
-            className="text-base"
+            className="text-lg"
             onClick={() => setIsMenuOpen(false)}
           >
             {link.name}
@@ -215,7 +228,7 @@ const Navbar = () => {
 
         <Link
           to="/cadastrar-estabelecimento"
-          className="text-base"
+          className="text-lg"
           onClick={() => setIsMenuOpen(false)}
         >
           Cadastre seu estabelecimento
@@ -225,21 +238,21 @@ const Navbar = () => {
           <>
             <Link
               to="/minha-conta"
-              className="text-base"
+              className="text-lg"
               onClick={() => setIsMenuOpen(false)}
             >
               Minha Conta
             </Link>
             <Link
               to="/favorites"
-              className="text-base"
+              className="text-lg"
               onClick={() => setIsMenuOpen(false)}
             >
               Meus Favoritos
             </Link>
             <Link
               to="/minhas-empresas"
-              className="text-base"
+              className="text-lg"
               onClick={() => setIsMenuOpen(false)}
             >
               Minhas Empresas
@@ -247,7 +260,7 @@ const Navbar = () => {
             {isAdmin && (
               <Link
                 to="/admin"
-                className="text-base"
+                className="text-lg"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Painel Admin
@@ -263,7 +276,7 @@ const Navbar = () => {
         ) : (
           <Link
             to="/login"
-            className="text-base"
+            className="text-lg"
             onClick={() => setIsMenuOpen(false)}
           >
             <button className="bg-black text-white px-8 py-2.5 rounded-full">

@@ -76,8 +76,36 @@ const Card = ({ business, loading = false }) => {
               className="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-105 rounded-b-2xl"
             />
             {/* Tag da categoria */}
-            <div className="absolute top-2 left-2 bg-blue-400 text-white text-[10px] uppercase font-bold py-1 px-2 rounded">
-              {business.category?.name || "Categoria"}
+            <div className="absolute top-2 left-2  text-white text-[10px] font-bold py-1 px-2 rounded">
+              <div className="flex flex-wrap gap-1 mt-2">
+                {/* Categorias */}
+
+                {/* Para categorias (estrutura aninhada) */}
+                {business.category?.flat().map(
+                  (cat, index) =>
+                    cat?.name && (
+                      <span
+                        key={`cat-${index}`}
+                        className="text-[9px] bg-blue-100 text-blue-800 px-2 py-1 rounded-full"
+                      >
+                        {cat.name}
+                      </span>
+                    )
+                )}
+
+                {/* Para subcategorias (estrutura aninhada) */}
+                {business.subCategory?.flat().map(
+                  (subCat, index) =>
+                    subCat?.name && (
+                      <span
+                        key={`subcat-${index}`}
+                        className="text-[9px] bg-green-100 text-green-800 px-2 py-1 rounded-full"
+                      >
+                        {subCat.name}
+                      </span>
+                    )
+                )}
+              </div>
             </div>
             <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </div>
@@ -91,7 +119,7 @@ const Card = ({ business, loading = false }) => {
       <div className="p-4 flex justify-between items-center border-t">
         <Link
           to={`/business/${business.slug}`}
-          className="uppercase font-semibold text-xs text-[#042f4a] "
+          className="uppercase font-semibold text-xs text-[#4F583B] "
         >
           Ver mais
         </Link>

@@ -71,10 +71,10 @@ const NeighborhoodsManager = () => {
 
       if (editingId) {
         await NeighborhoodService.update(editingId, payload);
-        setMessage({ text: "Bairro atualizado com sucesso!", type: "success" });
+        setMessage({ text: "Cidade atualizado com sucesso!", type: "success" });
       } else {
         await NeighborhoodService.create(payload);
-        setMessage({ text: "Bairro criado com sucesso!", type: "success" });
+        setMessage({ text: "Cidade criado com sucesso!", type: "success" });
       }
 
       fetchData();
@@ -90,7 +90,7 @@ const NeighborhoodsManager = () => {
           error.response?.data?.error ||
           error.response?.data?.message ||
           error.message ||
-          "Erro ao salvar bairro",
+          "Erro ao salvar Cidade",
         type: "error",
       });
     }
@@ -120,17 +120,17 @@ const NeighborhoodsManager = () => {
       setEditingId(neighborhood._id);
     } catch (error) {
       setMessage({
-        text: "Erro ao carregar dados do bairro para edição",
+        text: "Erro ao carregar dados do Cidade para edição",
         type: "error",
       });
     }
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Tem certeza que deseja excluir este bairro?")) {
+    if (window.confirm("Tem certeza que deseja excluir este Cidade?")) {
       try {
         await NeighborhoodService.delete(id);
-        setMessage({ text: "Bairro excluído com sucesso!", type: "success" });
+        setMessage({ text: "Cidade excluído com sucesso!", type: "success" });
         await fetchData();
 
         if (editingId === id) {
@@ -138,7 +138,7 @@ const NeighborhoodsManager = () => {
         }
       } catch (error) {
         setMessage({
-          text: error.response?.data?.message || "Erro ao excluir bairro",
+          text: error.response?.data?.message || "Erro ao excluir Cidade",
           type: "error",
         });
       }
@@ -151,7 +151,7 @@ const NeighborhoodsManager = () => {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold">Gerenciar Bairros</h2>
+      <h2 className="text-2xl font-bold">Gerenciar Cidades</h2>
 
       {message.text && (
         <div
@@ -167,7 +167,7 @@ const NeighborhoodsManager = () => {
 
       <div className="bg-white p-6 rounded-lg shadow-md">
         <h3 className="text-lg font-semibold mb-4">
-          {editingId ? "Editar Bairro" : "Adicionar Novo Bairro"}
+          {editingId ? "Editar Cidade" : "Adicionar Novo Cidade"}
         </h3>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -239,9 +239,9 @@ const NeighborhoodsManager = () => {
         </form>
       </div>
 
-      {/* Lista de Bairros */}
+      {/* Lista de Cidades */}
       <div className="bg-white p-6 rounded-lg shadow-md">
-        <h3 className="text-lg font-semibold mb-4">Lista de Bairros</h3>
+        <h3 className="text-lg font-semibold mb-4">Lista de Cidades</h3>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">

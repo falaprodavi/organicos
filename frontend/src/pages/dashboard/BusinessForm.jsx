@@ -14,8 +14,8 @@ const BusinessForm = () => {
   const navigate = useNavigate();
   const [loadingPhoto, setLoadingPhoto] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [categories, setCategories] = useState([]);
-  const [subCategories, setSubCategories] = useState([]);
+  const [allCategories, setAllCategories] = useState([]);
+  const [allSubCategories, setAllSubCategories] = useState([]);
   const [cities, setCities] = useState([]);
   const [neighborhoods, setNeighborhoods] = useState([]);
   const [formData, setFormData] = useState({
@@ -32,8 +32,8 @@ const BusinessForm = () => {
     },
     lat: "",
     long: "",
-    category: "",
-    subCategory: "",
+    category: [],
+    subCategory: [],
     instagram: "",
     facebook: "",
     linkedin: "",
@@ -47,15 +47,7 @@ const BusinessForm = () => {
 
   useScrollToTop();
 
-  const handlePhoneChange = (e) => {
-    const { name, value } = e.target;
-    const formattedValue = formatPhoneNumber(value);
-    setFormData({
-      ...formData,
-      [name]: formattedValue,
-    });
-  };
-
+  // Carrega todos os dados iniciais
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
@@ -64,55 +56,62 @@ const BusinessForm = () => {
           CityService.getAll(),
         ]);
 
-        setCategories(categoriesData);
-        setCities(citiesData);
+        if (!categoriesData || !citiesData) {
+          throw new Error("Dados essenciais não puderam ser carregados");
+        }
+
+        setAllCategories(categoriesData.data || categoriesData);
+        setCities(citiesData.data || citiesData);
 
         if (id) {
-          // Se estiver editando, carrega os dados do estabelecimento
           const response = await BusinessService.getById(id);
           const businessData = response.data;
 
-          // Carregar bairros se houver cidade
+          // Carrega bairros se houver cidade
           if (businessData.address?.city?._id) {
             await fetchNeighborhoods(businessData.address.city._id);
           }
 
-          // Carregar subcategorias
-          const subCats = await SubCategoryService.getByCategoryId(
-            businessData.category?._id
-          );
-          setSubCategories(subCats);
+          // Carrega subcategorias baseadas nas categorias do negócio
+          if (businessData.category?.length > 0) {
+            const categoryIds = businessData.category.map((c) => c._id);
+            const subCatsResponse = await SubCategoryService.getByCategoryIds(
+              categoryIds
+            );
 
+            const filteredSubCats = (
+              subCatsResponse.data || subCatsResponse
+            ).filter((subCat) =>
+              businessData.category.some(
+                (cat) => cat._id === (subCat.category._id || subCat.category)
+              )
+            );
+
+            setAllSubCategories(filteredSubCats);
+          }
+
+          // Atualiza o formData com os dados do negócio
           setFormData({
-            name: businessData.name || "",
-            description: businessData.description || "",
-            phone: businessData.phone || "",
-            whatsapp: businessData.whatsapp || "",
-            photos: businessData.photos || [],
+            ...businessData,
             address: {
               street: businessData.address?.street || "",
               number: businessData.address?.number || "",
               city: businessData.address?.city?._id || "",
               neighborhood: businessData.address?.neighborhood?._id || "",
             },
-            lat: businessData.lat || "",
-            long: businessData.long || "",
-            category: businessData.category?._id || "",
-            subCategory: businessData.subCategory?._id || "",
-            instagram: businessData.instagram || "",
-            facebook: businessData.facebook || "",
-            linkedin: businessData.linkedin || "",
-            twitter: businessData.twitter || "",
-            tiktok: businessData.tiktok || "",
-            site: businessData.site || "",
-            video: businessData.video || "",
+            category: businessData.category?.map((c) => c._id) || [],
+            subCategory: businessData.subCategory?.map((sc) => sc._id) || [],
           });
 
           setPreviewImages(businessData.photos || []);
         }
         setLoading(false);
       } catch (error) {
-        setMessage({ text: "Erro ao carregar dados", type: "error" });
+        console.error("Erro ao carregar dados:", error);
+        setMessage({
+          text: error.response?.data?.message || "Erro ao carregar dados",
+          type: "error",
+        });
         setLoading(false);
       }
     };
@@ -124,38 +123,59 @@ const BusinessForm = () => {
     try {
       if (!cityId) return;
       const data = await NeighborhoodService.getByCity(cityId);
-      setNeighborhoods(data);
+      setNeighborhoods(data.data || data);
     } catch (error) {
       console.error("Erro ao carregar bairros:", error);
+      setNeighborhoods([]);
     }
   };
 
-  useEffect(() => {
-    if (formData.category) {
-      fetchSubCategories(formData.category);
-    } else {
-      setSubCategories([]);
-      setFormData((prev) => ({ ...prev, subCategory: "" }));
+  const fetchSubCategories = async (categoryIds) => {
+    if (!categoryIds || categoryIds.length === 0) {
+      setAllSubCategories([]);
+      return;
     }
-  }, [formData.category]);
 
-  const fetchSubCategories = async (categoryId) => {
     try {
-      const category = categories.find((c) => c._id === categoryId);
-      if (!category) return;
+      const response = await SubCategoryService.getByCategoryIds(categoryIds);
 
-      const data = await SubCategoryService.getByCategory(category.slug);
-      setSubCategories(data);
+      // Filtra apenas subcategorias que pertencem a pelo menos uma das categorias selecionadas
+      const filteredSubCategories = (
+        response.data || response
+      ).filter((subCat) =>
+        categoryIds.includes(subCat.category._id || subCat.category)
+      );
 
-      setFormData((prev) => ({
-        ...prev,
-        subCategory: data.some((sc) => sc._id === prev.subCategory)
-          ? prev.subCategory
-          : "",
-      }));
+      setAllSubCategories(filteredSubCategories);
     } catch (error) {
       console.error("Erro ao carregar subcategorias:", error);
-      setSubCategories([]);
+      setAllSubCategories([]);
+    }
+  };
+
+  const handlePhoneChange = (e) => {
+    const { name, value } = e.target;
+    const formattedValue = formatPhoneNumber(value);
+    setFormData({
+      ...formData,
+      [name]: formattedValue,
+    });
+  };
+
+  const handleMultipleSelectChange = (e) => {
+    const { name, options } = e.target;
+    const selectedValues = Array.from(options)
+      .filter((option) => option.selected)
+      .map((option) => option.value);
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: selectedValues,
+    }));
+
+    // Se mudaram as categorias, carrega as subcategorias correspondentes
+    if (name === "category") {
+      fetchSubCategories(selectedValues);
     }
   };
 
@@ -175,13 +195,6 @@ const BusinessForm = () => {
       if (field === "city") {
         fetchNeighborhoods(value);
       }
-    } else if (name === "category") {
-      setFormData({
-        ...formData,
-        [name]: value,
-        subCategory: "",
-      });
-      fetchSubCategories(value);
     } else {
       setFormData({
         ...formData,
@@ -270,9 +283,25 @@ const BusinessForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validação
+    if (formData.category.length === 0) {
+      setMessage({ text: "Selecione pelo menos uma categoria", type: "error" });
+      return;
+    }
+
+    if (formData.subCategory.length === 0) {
+      setMessage({
+        text: "Selecione pelo menos uma subcategoria",
+        type: "error",
+      });
+      return;
+    }
+
     try {
       const formDataToSend = new FormData();
 
+      // Adiciona campos básicos
       formDataToSend.append("name", formData.name);
       formDataToSend.append("description", formData.description);
       formDataToSend.append("phone", formData.phone);
@@ -286,8 +315,6 @@ const BusinessForm = () => {
       );
       formDataToSend.append("lat", formData.lat);
       formDataToSend.append("long", formData.long);
-      formDataToSend.append("category", formData.category);
-      formDataToSend.append("subCategory", formData.subCategory);
       formDataToSend.append("instagram", formData.instagram);
       formDataToSend.append("facebook", formData.facebook);
       formDataToSend.append("linkedin", formData.linkedin);
@@ -296,6 +323,16 @@ const BusinessForm = () => {
       formDataToSend.append("site", formData.site);
       formDataToSend.append("video", formData.video);
 
+      // Adiciona categorias e subcategorias como arrays
+      formData.category.forEach((cat) => {
+        formDataToSend.append("category[]", cat);
+      });
+
+      formData.subCategory.forEach((subCat) => {
+        formDataToSend.append("subCategory[]", subCat);
+      });
+
+      // Adiciona fotos
       formData.photos.forEach((photo, index) => {
         if (photo instanceof File) {
           formDataToSend.append("photos", photo);
@@ -320,7 +357,6 @@ const BusinessForm = () => {
         });
       }
 
-      // Redireciona após 2 segundos
       setTimeout(() => {
         navigate("/dashboard/business");
       }, 2000);
@@ -335,6 +371,13 @@ const BusinessForm = () => {
     }
   };
 
+  const handleEditorChange = (content) => {
+    setFormData((prev) => ({
+      ...prev,
+      description: content,
+    }));
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -342,13 +385,6 @@ const BusinessForm = () => {
       </div>
     );
   }
-
-  const handleEditorChange = (content) => {
-    setFormData((prev) => ({
-      ...prev,
-      description: content,
-    }));
-  };
 
   return (
     <div className="space-y-6">
@@ -378,9 +414,6 @@ const BusinessForm = () => {
 
       <div className="bg-white p-6 rounded-lg shadow-md">
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* O resto do formulário permanece igual ao seu código original */}
-          {/* ... (mantenha todas as seções do formulário como estão) ... */}
-
           <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
             <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
               <div>
@@ -402,7 +435,7 @@ const BusinessForm = () => {
                   Descrição*
                 </label>
                 <Editor
-                  apiKey="41g4akl67ydz2p7djq19czz32fwe3of4dm2jf6uo40qm7jvc" // opcional para funcionalidades básicas
+                  apiKey="41g4akl67ydz2p7djq19czz32fwe3of4dm2jf6uo40qm7jvc"
                   value={formData.description}
                   init={{
                     height: 200,
@@ -422,13 +455,13 @@ const BusinessForm = () => {
                   Telefone*
                 </label>
                 <input
-                  type="tel" // Alterado para type="tel" para melhor experiência em mobile
+                  type="tel"
                   name="phone"
                   value={formData.phone}
-                  onChange={handlePhoneChange} // Usando o novo handler
+                  onChange={handlePhoneChange}
                   className="w-full p-2 border border-gray-300 rounded-md"
                   placeholder="(99) 99999-9999"
-                  maxLength={15} // Com formatação, o máximo será 15 caracteres
+                  maxLength={15}
                   required
                 />
               </div>
@@ -441,7 +474,7 @@ const BusinessForm = () => {
                   type="tel"
                   name="whatsapp"
                   value={formData.whatsapp}
-                  onChange={handlePhoneChange} // Usando o mesmo handler
+                  onChange={handlePhoneChange}
                   className="w-full p-2 border border-gray-300 rounded-md"
                   placeholder="(99) 99999-9999"
                   maxLength={15}
@@ -452,59 +485,88 @@ const BusinessForm = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Categoria*
+                  Categorias*
                 </label>
                 <select
                   name="category"
+                  multiple
                   value={formData.category}
-                  onChange={handleInputChange}
-                  className="w-full p-2 border border-gray-300 rounded-md"
+                  onChange={handleMultipleSelectChange}
+                  className="w-full p-2 border border-gray-300 rounded-md h-auto"
                   required
+                  size={Math.min(5, allCategories.length + 1)}
                 >
-                  <option value="">Selecione uma categoria</option>
-                  {categories.map((category) => (
+                  {allCategories.map((category) => (
                     <option key={category._id} value={category._id}>
                       {category.name}
                     </option>
                   ))}
                 </select>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {formData.category.map((catId) => {
+                    const category = allCategories.find((c) => c._id === catId);
+                    return category ? (
+                      <span
+                        key={catId}
+                        className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded"
+                      >
+                        {category.name}
+                      </span>
+                    ) : null;
+                  })}
+                </div>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Subcategoria*
+                  Subcategorias*
                 </label>
                 <select
                   name="subCategory"
+                  multiple
                   value={formData.subCategory}
-                  onChange={handleInputChange}
-                  className="w-full p-2 border border-gray-300 rounded-md"
+                  onChange={handleMultipleSelectChange}
+                  className="w-full p-2 border border-gray-300 rounded-md h-auto"
                   required
-                  disabled={!formData.category || loading}
+                  size={Math.min(5, allSubCategories.length + 1)}
+                  disabled={formData.category.length === 0}
                 >
-                  <option value="">
-                    {loading ? "Carregando..." : "Selecione uma subcategoria"}
-                  </option>
-                  {subCategories.map((subCategory) => (
-                    <option key={subCategory._id} value={subCategory._id}>
-                      {subCategory.name}
+                  {allSubCategories.length === 0 ? (
+                    <option value="" disabled>
+                      {formData.category.length === 0
+                        ? "Selecione categorias primeiro"
+                        : "Nenhuma subcategoria disponível"}
                     </option>
-                  ))}
-                </select>
-                {!loading &&
-                  formData.category &&
-                  subCategories.length === 0 && (
-                    <p className="text-xs text-red-500 mt-1">
-                      Nenhuma subcategoria disponível para esta categoria
-                    </p>
+                  ) : (
+                    allSubCategories.map((subCategory) => (
+                      <option key={subCategory._id} value={subCategory._id}>
+                        {subCategory.name}
+                      </option>
+                    ))
                   )}
+                </select>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {formData.subCategory.map((subCatId) => {
+                    const subCategory = allSubCategories.find(
+                      (sc) => sc._id === subCatId
+                    );
+                    return subCategory ? (
+                      <span
+                        key={subCatId}
+                        className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded"
+                      >
+                        {subCategory.name}
+                      </span>
+                    ) : null;
+                  })}
+                </div>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Cidade*
+                  Estado*
                 </label>
                 <select
                   name="address.city"
@@ -513,7 +575,7 @@ const BusinessForm = () => {
                   className="w-full p-2 border border-gray-300 rounded-md"
                   required
                 >
-                  <option value="">Selecione uma cidade</option>
+                  <option value="">Selecione um Estado</option>
                   {cities.map((city) => (
                     <option key={city._id} value={city._id}>
                       {city.name}
@@ -524,7 +586,7 @@ const BusinessForm = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Bairro*
+                  Cidade*
                 </label>
                 <select
                   name="address.neighborhood"
@@ -534,7 +596,7 @@ const BusinessForm = () => {
                   required
                   disabled={!formData.address.city}
                 >
-                  <option value="">Selecione um bairro</option>
+                  <option value="">Selecione uma Cidade</option>
                   {neighborhoods.map((neighborhood) => (
                     <option key={neighborhood._id} value={neighborhood._id}>
                       {neighborhood.name}
@@ -757,9 +819,6 @@ const BusinessForm = () => {
                 />
               </div>
             </div>
-
-            {/* Continue com todos os outros campos do formulário */}
-            {/* ... */}
           </div>
 
           <div className="flex space-x-4">

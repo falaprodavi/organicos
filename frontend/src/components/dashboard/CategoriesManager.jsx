@@ -22,12 +22,14 @@ const CategoriesManager = () => {
 
   const fetchCategories = async () => {
     try {
-      const data = await CategoryService.getAll();
-      setCategories(data);
+      const response = await CategoryService.getAll();
+      // Verifica se a requisição foi bem sucedida e usa response.data
+      setCategories(response.success ? response.data : []);
       setLoading(false);
     } catch (error) {
       setMessage({ text: "Erro ao carregar categorias", type: "error" });
       setLoading(false);
+      setCategories([]); // Garante que categories seja um array vazio em caso de erro
     }
   };
 

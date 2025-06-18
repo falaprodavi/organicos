@@ -16,9 +16,11 @@ const Footer = () => {
     const fetchCategories = async () => {
       try {
         const response = await CategoryService.getAll();
-        setAllCategories(response);
+        // Acesse response.data que contém o array de categorias
+        setAllCategories(response.data || []);
       } catch (error) {
         console.error("Failed to fetch categories:", error);
+        setAllCategories([]); // Garante um array vazio em caso de erro
       }
     };
 
@@ -81,131 +83,147 @@ const Footer = () => {
   ];
 
   return (
-    <div className="text-gray-500/80 mt-12 pt-8 px-6 md:px-16 lg:px-24 xl:px-32">
-      <div className="flex flex-wrap justify-between gap-12 md:gap-6">
-        <div className="max-w-80">
-          <img src={assets.badgeIcon} alt="logo" />
-          <p className="text-sm mt-2">
-            Somos uma plataforma especializada na divulgação dos melhores
-            estabelecimentos do Vale do Paraíba . Nosso sistema de busca permite
-            que você encontre empresas de forma rápida e intuitiva, utilizando
-            filtros como cidade, bairro, categoria e subcategoria.
-          </p>
-          <div className="flex items-center gap-3 mt-4">
-            {socialIcons.map((social, index) => (
-              <svg
-                key={index}
-                className="w-6 h-6"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d={social.icon} />
-              </svg>
-            ))}
-          </div>
-        </div>
-
-        {/* Seção de Cidades */}
-        <div>
-          <h3 className="text-lg text-gray-800">CIDADES</h3>
-          <ul className="mt-3 flex flex-col gap-2 text-sm">
-            {cities?.slice(0, 5).map((city) => (
-              <li key={city._id}>
-                <Link
-                  to={`/explore?city=${slugify(city.name)}`}
-                  className="hover:text-gray-800 transition-colors"
+    <footer className="border-t ">
+      <div className="bg-white max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 text-gray-600 mt-16 pt-12  ">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+          {/* Logo e Descrição */}
+          <div className="max-w-80">
+            <img src={assets.badgeIcon} alt="logo" className="h-8" />
+            <p className="text-sm mt-4 leading-relaxed">
+              O Orgânico.Life é uma plataforma de anúncios dedicado
+              exclusivamente ao universo dos produtos orgânicos, reunindo
+              empresas comprometidas com saúde, sustentabilidade e qualidade de
+              vida.
+            </p>
+            <div className="flex items-center gap-3 mt-4">
+              {socialIcons.map((social, index) => (
+                <a
+                  key={index}
+                  href={social.url}
+                  className="hover:text-black transition"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
-                  {city.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Seção de Categorias Aleatórias */}
-        <div>
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg text-gray-800 mr-3"> CATEGORIAS </h3>
-            <button
-              onClick={selectRandomCategories}
-              className="text-gray-500 hover:text-gray-800 transition-colors"
-              title="Mostrar outras categorias"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                />
-              </svg>
-            </button>
+                  <svg
+                    className="w-5 h-5"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d={social.icon} />
+                  </svg>
+                </a>
+              ))}
+            </div>
           </div>
-          <ul className="mt-3 flex flex-col gap-2 text-sm">
-            {randomCategories.map((category) => (
-              <li key={category._id}>
-                <Link
-                  to={`/explore?category=${slugify(category.name)}`}
-                  className="hover:text-gray-800 transition-colors"
-                >
-                  {category.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
 
-        <div className="max-w-80">
-          <h3 className="text-lg text-gray-800">FIQUE ATUALIZADO</h3>
-          <p className="mt-3 text-sm">
-            Confira as novidades do Vale do Paraíba!
-          </p>
-          <div className="flex items-center mt-4">
-            <input
-              type="text"
-              className="bg-white rounded-l border border-gray-300 h-9 px-3 outline-none flex-grow"
-              placeholder="Digite seu e-mail..."
-            />
-            <button className="flex items-center justify-center bg-black h-9 w-9 aspect-square rounded-r">
-              <svg
-                className="w-4 h-4 text-white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
+          {/* Cidades */}
+          <div>
+            <h3 className="text-base font-semibold text-gray-800">ESTADOS</h3>
+            <ul className="mt-4 space-y-2 text-sm">
+              {cities?.slice(0, 5).map((city) => (
+                <li key={city._id}>
+                  <Link
+                    to={`/explore?city=${slugify(city.name)}`}
+                    className="hover:text-black transition"
+                  >
+                    {city.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Categorias */}
+          <div>
+            <div className="flex items-center justify-between">
+              <h3 className="text-base font-semibold text-gray-800">
+                CATEGORIAS
+              </h3>
+              <button
+                onClick={selectRandomCategories}
+                className="text-gray-400 hover:text-black transition"
+                title="Mostrar outras categorias"
               >
-                <path
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
                   stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M19 12H5m14 0-4 4m4-4-4-4"
-                />
-              </svg>
-            </button>
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                  />
+                </svg>
+              </button>
+            </div>
+            <ul className="mt-4 space-y-2 text-sm">
+              {randomCategories.map((category) => (
+                <li key={category._id}>
+                  <Link
+                    to={`/explore?category=${slugify(category.name)}`}
+                    className="hover:text-black transition"
+                  >
+                    {category.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Newsletter */}
+          <div className="max-w-80">
+            <h3 className="text-base font-semibold text-gray-800">
+              FIQUE ATUALIZADO
+            </h3>
+            <p className="mt-4 text-sm leading-relaxed">
+              Confira as novidades Naturais e Orgânicas
+            </p>
+            <div className="flex items-center mt-4 rounded overflow-hidden border border-gray-300">
+              <input
+                type="email"
+                placeholder="Digite seu e-mail..."
+                className="flex-grow px-3 h-10 text-sm outline-none"
+              />
+              <button className="bg-black hover:bg-gray-800 text-white px-4 h-10 transition">
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 12H5m14 0-4 4m4-4-4-4"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <hr className="border-gray-300 mt-8" />
+        <hr className="mt-12 border-gray-200" />
 
-      <div className="flex flex-col md:flex-row gap-2 items-center justify-between py-5">
-        <p>© {new Date().getFullYear()} Todos direitos Reservados.</p>
-        <ul className="flex items-center gap-4">
-          {legalLinks.map((link) => (
-            <li key={link.label}>
-              <a href={link.href}>{link.label}</a>
-            </li>
-          ))}
-        </ul>
+        {/* Rodapé inferior */}
+        <div className="flex flex-col md:flex-row items-center justify-between text-sm text-gray-400 py-6 gap-2">
+          <p>© {new Date().getFullYear()} Todos os direitos reservados.</p>
+          <ul className="flex flex-wrap gap-4">
+            {legalLinks.map((link) => (
+              <li key={link.label}>
+                <a href={link.href} className="hover:text-gray-600 transition">
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
-    </div>
+    </footer>
   );
 };
 

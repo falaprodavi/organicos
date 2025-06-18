@@ -23,8 +23,7 @@ const cityStorage = multer.diskStorage({
     cb(null, dir);
   },
   filename: (req, file, cb) => {
-    const uniqueName =
-      "cities-" + Date.now() + path.extname(file.originalname);
+    const uniqueName = "cities-" + Date.now() + path.extname(file.originalname);
     cb(null, uniqueName);
   },
 });
