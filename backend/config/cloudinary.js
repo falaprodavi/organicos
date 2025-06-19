@@ -24,7 +24,7 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: "businesses", // pasta no Cloudinary
-    allowed_formats: ["jpg", "png", "jpeg", "svg"],
+    allowed_formats: ["jpg", "png", "jpeg", "svg", "webp"],
   },
 });
 
@@ -32,7 +32,7 @@ const cityStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: "cities",
-    allowed_formats: ["jpg", "png", "jpeg", "svg"],
+    allowed_formats: ["jpg", "png", "jpeg", "svg", "webp"],
   },
 });
 
@@ -40,7 +40,7 @@ const categoryStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: "categories",
-    allowed_formats: ["jpg", "png", "jpeg", "svg"],
+    allowed_formats: ["jpg", "png", "jpeg", "svg", "webp"],
   },
 });
 

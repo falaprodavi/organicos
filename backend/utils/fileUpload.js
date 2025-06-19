@@ -60,7 +60,7 @@ const uploadSubCategoryIcon = multer({
   storage: subCategoryIconStorage,
   limits: { fileSize: 2 * 1024 * 1024 }, // 2MB
   fileFilter: function (req, file, cb) {
-    const filetypes = /jpeg|jpg|png|svg/;
+    const filetypes = /jpeg|jpg|png|svg|webp/;
     const mimetype = filetypes.test(file.mimetype);
     const extname = filetypes.test(
       path.extname(file.originalname).toLowerCase()
@@ -71,7 +71,7 @@ const uploadSubCategoryIcon = multer({
     }
     cb(
       new Error(
-        "Apenas arquivos de imagem são permitidos (jpeg, jpg, png, svg)"
+        "Apenas arquivos de imagem são permitidos (jpeg, jpg, png, svg, webp)"
       )
     );
   },
@@ -93,7 +93,7 @@ const businessStorage = multer.diskStorage({
 
 // Filtro comum para todos (aceita apenas imagens)
 const fileFilter = (req, file, cb) => {
-  const allowedTypes = [".jpg", ".jpeg", ".png", ".svg"];
+  const allowedTypes = [".jpg", ".jpeg", ".png", ".svg", ".webp"];
   const ext = path.extname(file.originalname).toLowerCase();
   allowedTypes.includes(ext)
     ? cb(null, true)

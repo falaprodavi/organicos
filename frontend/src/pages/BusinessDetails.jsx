@@ -546,7 +546,7 @@ const BusinessDetails = () => {
           <div className="bg-white rounded-lg shadow p-4 text-gray-700">
             {business.address.street}, {business.address.number},{" "}
             {business.address?.neighborhood?.name},{" "}
-            {business.address?.city?.name}/SP
+            {business.address?.city?.name} - Brasil
           </div>
 
           {/* Contato / Redes Sociais */}
